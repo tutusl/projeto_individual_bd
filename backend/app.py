@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:1234@localhost/evaluatedb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'test'
+app.config['SESSION_TYPE'] = 'filesystem'
 
 db = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
@@ -23,7 +25,7 @@ with app.app_context():
     User = Base.classes.user
     Department = Base.classes.department
 
-    session = Session(db)
+    Session = Session(db)
 
 '''
 CRUD USUÁRIO
@@ -31,8 +33,11 @@ CRUD USUÁRIO
 
 @app.route('/')
 def index():
-    results = session.query(User).all()
-    return render_template('index.html', users=results)
+    results = Session.query(User).all()
+    if 'user.id' in session:
+        return render_template('index.html', users=results)
+    else:
+        return redirect('/login')
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
@@ -44,15 +49,15 @@ def create():
         curso = request.form['curso']
         
         new_user = User(registry=matricula, name=nome, email=email, password=senha, course=curso, role_id=2)
-        session.add(new_user)
-        session.commit()
+        Session.add(new_user)
+        Session.commit()
         return redirect('/')
     
     return render_template('create.html')
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-    user = session.query(User).get(id)
+    user = Session.query(User).get(id)
     if request.method == 'POST':
         user.name = request.form['nome']
         user.email = request.form['email']
@@ -60,16 +65,16 @@ def edit(id):
         user.registry = request.form['matricula']
         user.course = request.form['curso']
         
-        session.commit()
+        Session.commit()
         return redirect('/')
     
     return render_template('edit.html', user=user)
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    user = session.query(User).get(id)
-    session.delete(user)
-    session.commit()
+    user = Session.query(User).get(id)
+    Session.delete(user)
+    Session.commit()
     return redirect('/')
 
 '''
@@ -78,7 +83,7 @@ CRUD AVALIAÇÃO
 
 @app.route('/evaluations')
 def evaluations():
-    evaluations = session.query(Evaluation).all()
+    evaluations = Session.query(Evaluation).all()
     return render_template('evaluations.html', evaluations=evaluations)
 
 @app.route('/evaluation/create', methods=['GET', 'POST'])
@@ -100,8 +105,8 @@ def create_evaluation():
             user_id=int(user_id)
         )
         
-        session.add(new_evaluation)
-        session.commit()
+        Session.add(new_evaluation)
+        Session.commit()
         
         return redirect('/evaluations')
     
@@ -109,7 +114,7 @@ def create_evaluation():
 
 @app.route('/evaluation/edit/<int:id>', methods=['GET', 'POST'])
 def edit_evaluation(id):
-    evaluation = session.query(Evaluation).get(id)
+    evaluation = Session.query(Evaluation).get(id)
     
     if request.method == 'POST':
         evaluation.class_discipline_code = request.form['class_discipline']
@@ -119,7 +124,7 @@ def edit_evaluation(id):
         evaluation.rating = request.form['rating']
         evaluation.user_id = request.form['user_id']
         
-        session.commit()
+        Session.commit()
         
         return redirect('/evaluations')
     
@@ -127,9 +132,9 @@ def edit_evaluation(id):
 
 @app.route('/evaluation/delete/<int:id>')
 def delete_evaluation(id):
-    evaluation = session.query(Evaluation).get(id)
-    session.delete(evaluation)
-    session.commit()
+    evaluation = Session.query(Evaluation).get(id)
+    Session.delete(evaluation)
+    Session.commit()
     return redirect('/evaluations')
 
 """
@@ -138,7 +143,7 @@ CRUD REPORT
 
 @app.route('/reports')
 def reports():
-    reports = session.query(Report).all()
+    reports = Session.query(Report).all()
     return render_template('reports.html', reports=reports)
 
 @app.route('/report/create/<int:evaluation_id>', methods=['GET', 'POST'])
@@ -147,8 +152,8 @@ def create_report(evaluation_id):
         reason = request.form['reason']
         
         new_report = Report(evaluation_id=evaluation_id, reason=reason)
-        session.add(new_report)
-        session.commit()
+        Session.add(new_report)
+        Session.commit()
         
         return redirect('/reports')
     
@@ -156,12 +161,12 @@ def create_report(evaluation_id):
 
 @app.route('/report/edit/<int:id>', methods=['GET', 'POST'])
 def edit_report(id):
-    report = session.query(Report).get(id)
+    report = Session.query(Report).get(id)
     
     if request.method == 'POST':
         report.reason = request.form['reason']
         
-        session.commit()
+        Session.commit()
         
         return redirect('/reports')
     
@@ -169,7 +174,37 @@ def edit_report(id):
 
 @app.route('/report/delete/<int:id>')
 def delete_report(id):
-    report = session.query(Report).get(id)
-    session.delete(report)
-    session.commit()
+    report = Session.query(Report).get(id)
+    Session.delete(report)
+    Session.commit()
     return redirect('/reports')
+
+"""
+LOGIN 
+"""
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
+        
+        user = Session.query(User).filter_by(email=email, password=senha).first()
+        
+        if user:
+            session['user_id'] = user.id
+            return redirect('/')
+        else:
+            error_message = 'Credenciais inválidas. Por favor, tente novamente.'
+            return render_template('login.html', error_message=error_message)
+    
+    return render_template('login.html')
+
+"""
+LOGOUT 
+"""
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect('/login')
