@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:1234@localhost/evaluatedb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['debug'] = True
 
 db = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
@@ -132,3 +131,45 @@ def delete_evaluation(id):
     session.delete(evaluation)
     session.commit()
     return redirect('/evaluations')
+
+"""
+CRUD REPORT
+"""
+
+@app.route('/reports')
+def reports():
+    reports = session.query(Report).all()
+    return render_template('reports.html', reports=reports)
+
+@app.route('/report/create/<int:evaluation_id>', methods=['GET', 'POST'])
+def create_report(evaluation_id):
+    if request.method == 'POST':
+        reason = request.form['reason']
+        
+        new_report = Report(evaluation_id=evaluation_id, reason=reason)
+        session.add(new_report)
+        session.commit()
+        
+        return redirect('/reports')
+    
+    return render_template('create_report.html', evaluation_id=evaluation_id)
+
+@app.route('/report/edit/<int:id>', methods=['GET', 'POST'])
+def edit_report(id):
+    report = session.query(Report).get(id)
+    
+    if request.method == 'POST':
+        report.reason = request.form['reason']
+        
+        session.commit()
+        
+        return redirect('/reports')
+    
+    return render_template('edit_report.html', report=report)
+
+@app.route('/report/delete/<int:id>')
+def delete_report(id):
+    report = session.query(Report).get(id)
+    session.delete(report)
+    session.commit()
+    return redirect('/reports')

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar Report</title>
+</head>
+<body>
+    <h1>Adicionar Report</h1>
+    <form action="/report/create/{{ evaluation_id }}" method="POST">
+        <label for="reason">Razão:</label>
+        <textarea id="reason" name="reason" required></textarea><br>
+        
+        <input type="submit" value="Salvar">
+    </form>
+    <a href="/reports">Voltar</a>
+</body>
+</html>
