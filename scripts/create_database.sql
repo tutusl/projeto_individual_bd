@@ -13,6 +13,7 @@ DROP SCHEMA IF EXISTS `evaluatedb` ;
 CREATE SCHEMA IF NOT EXISTS `evaluatedb` ;
 USE `evaluatedb` ;
 
+
 -- -----------------------------------------------------
 -- Table `evaluatedb`.`role`
 -- -----------------------------------------------------
@@ -152,22 +153,22 @@ CREATE TABLE IF NOT EXISTS `evaluatedb`.`evaluation` (
     FOREIGN KEY (`user_id`)
     REFERENCES `evaluatedb`.`user` (`id`)
     ON DELETE RESTRICT
-    ON UPDATE CASCADE,
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_evaluation_2`
     FOREIGN KEY (`class_discipline_code`)
     REFERENCES `evaluatedb`.`lecture` (`discipline_code`)
     ON DELETE RESTRICT
-    ON UPDATE CASCADE,
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_evaluation_3`
     FOREIGN KEY (`class_number`)
     REFERENCES `evaluatedb`.`lecture` (`class_number`)
     ON DELETE RESTRICT
-    ON UPDATE CASCADE,
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_evaluation_4`
     FOREIGN KEY (`class_period`)
     REFERENCES `evaluatedb`.`lecture` (`period`)
     ON DELETE RESTRICT
-    ON UPDATE CASCADE)
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Avaliações</title>
+</head>
+<body>
+    <h1>Avaliações</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>Número</th>
+                <th>Período</th>
+                <th>Descrição</th>
+                <th>Avaliação</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evaluation in evaluations %}
+            <tr>
+                <td>{{ evaluation.class_discipline }}</td>
+                <td>{{ evaluation.class_number }}</td>
+                <td>{{ evaluation.class_period }}</td>
+                <td>{{ evaluation.description }}</td>
+                <td>{{ evaluation.rating }}</td>
+                <td>{{ evaluation.user_id }}</td>
+                <td>
+                    <a href="/evaluation/edit/{{ evaluation.id }}">Editar</a>
+                    <a href="/evaluation/delete/{{ evaluation.id }}">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/evaluation/create">Adicionar Avaliação</a>
+</body>
+</html>

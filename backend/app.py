@@ -77,3 +77,58 @@ def delete(id):
 CRUD AVALIAÇÃO
 '''
 
+@app.route('/evaluations')
+def evaluations():
+    evaluations = session.query(Evaluation).all()
+    return render_template('evaluations.html', evaluations=evaluations)
+
+@app.route('/evaluation/create', methods=['GET', 'POST'])
+def create_evaluation():
+    if request.method == 'POST':
+        class_discipline = request.form['class_discipline']
+        class_number = request.form['class_number']
+        class_period = request.form['class_period']
+        description = request.form['description']
+        rating = request.form['rating']
+        user_id = request.form['user_id']
+        
+        new_evaluation = Evaluation(
+            class_discipline_code=class_discipline,
+            class_number=class_number,
+            class_period=class_period,
+            description=description,
+            rating=int(rating),
+            user_id=int(user_id)
+        )
+        
+        session.add(new_evaluation)
+        session.commit()
+        
+        return redirect('/evaluations')
+    
+    return render_template('create_evaluation.html')
+
+@app.route('/evaluation/edit/<int:id>', methods=['GET', 'POST'])
+def edit_evaluation(id):
+    evaluation = session.query(Evaluation).get(id)
+    
+    if request.method == 'POST':
+        evaluation.class_discipline_code = request.form['class_discipline']
+        evaluation.class_number = request.form['class_number']
+        evaluation.class_period = request.form['class_period']
+        evaluation.description = request.form['description']
+        evaluation.rating = request.form['rating']
+        evaluation.user_id = request.form['user_id']
+        
+        session.commit()
+        
+        return redirect('/evaluations')
+    
+    return render_template('edit_evaluation.html', evaluation=evaluation)
+
+@app.route('/evaluation/delete/<int:id>')
+def delete_evaluation(id):
+    evaluation = session.query(Evaluation).get(id)
+    session.delete(evaluation)
+    session.commit()
+    return redirect('/evaluations')
