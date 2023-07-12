@@ -18,7 +18,7 @@ VALUES
     ('MARUTSCHKA MARTINI MOESCH (30h)', 314),
     ('MARUTSCHKA MARTINI MOESCH (60h)', 314);
 
-INSERT INTO evaluatedb.class (discipline_code, class_number, period, time, local, professor_name)
+INSERT INTO evaluatedb.lecture (discipline_code, class_number, period, time, local, professor_name)
 VALUES 
 	('CET0013', '1', '2022.1', '3M1234', 'CET - Módulo E', 'MARUTSCHKA MARTINI MOESCH (60h)'),
     ('CDT1101', '1', '2022.1', '6T2345', 'Local à definir.', 'TANIA CRISTINA DA SILVA CRUZ (30h)'),

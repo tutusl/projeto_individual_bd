@@ -13,7 +13,6 @@ DROP SCHEMA IF EXISTS `evaluatedb` ;
 CREATE SCHEMA IF NOT EXISTS `evaluatedb` ;
 USE `evaluatedb` ;
 
-
 -- -----------------------------------------------------
 -- Table `evaluatedb`.`role`
 -- -----------------------------------------------------
@@ -41,8 +40,9 @@ CREATE TABLE IF NOT EXISTS `evaluatedb`.`user` (
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_id` TINYINT NULL,
-  PRIMARY KEY (`registry`),
+  `id` INT NOT NULL AUTO_INCREMENT,
   INDEX `fk_user_1_idx` (`role_id` ASC) VISIBLE,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_user_1`
     FOREIGN KEY (`role_id`)
     REFERENCES `evaluatedb`.`role` (`id`)
@@ -101,11 +101,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `evaluatedb`.`class`
+-- Table `evaluatedb`.`lecture`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `evaluatedb`.`class` ;
+DROP TABLE IF EXISTS `evaluatedb`.`lecture` ;
 
-CREATE TABLE IF NOT EXISTS `evaluatedb`.`class` (
+CREATE TABLE IF NOT EXISTS `evaluatedb`.`lecture` (
   `discipline_code` VARCHAR(45) NOT NULL,
   `class_number` VARCHAR(45) NOT NULL,
   `period` VARCHAR(45) NOT NULL,
@@ -139,33 +139,33 @@ CREATE TABLE IF NOT EXISTS `evaluatedb`.`evaluation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `rating` INT(2) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
-  `user_registry` INT(9) NOT NULL,
+  `user_id` INT(9) NOT NULL,
   `class_discipline_code` VARCHAR(45) NOT NULL,
   `class_number` VARCHAR(45) NOT NULL,
   `class_period` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_evaluation_1_idx` (`user_registry` ASC) VISIBLE,
+  INDEX `fk_evaluation_1_idx` (`user_id` ASC) VISIBLE,
   INDEX `fk_evaluation_2_idx` (`class_discipline_code` ASC) VISIBLE,
   INDEX `fk_evaluation_4_idx` (`class_period` ASC) VISIBLE,
   INDEX `fk_evaluation_3_idx` (`class_number` ASC) VISIBLE,
   CONSTRAINT `fk_evaluation_1`
-    FOREIGN KEY (`user_registry`)
-    REFERENCES `evaluatedb`.`user` (`registry`)
+    FOREIGN KEY (`user_id`)
+    REFERENCES `evaluatedb`.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_evaluation_2`
     FOREIGN KEY (`class_discipline_code`)
-    REFERENCES `evaluatedb`.`class` (`discipline_code`)
+    REFERENCES `evaluatedb`.`lecture` (`discipline_code`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_evaluation_3`
     FOREIGN KEY (`class_number`)
-    REFERENCES `evaluatedb`.`class` (`class_number`)
+    REFERENCES `evaluatedb`.`lecture` (`class_number`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_evaluation_4`
     FOREIGN KEY (`class_period`)
-    REFERENCES `evaluatedb`.`class` (`period`)
+    REFERENCES `evaluatedb`.`lecture` (`period`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
