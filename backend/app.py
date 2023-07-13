@@ -50,9 +50,10 @@ def create():
     
     return render_template('create.html')
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit(id):
-    user = Session.query(User).get(id)
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    user_id = session.get('user_id')
+    user = Session.query(User).get(user_id)
     if request.method == 'POST':
         user.name = request.form['nome']
         user.email = request.form['email']
@@ -61,7 +62,7 @@ def edit(id):
         user.course = request.form['curso']
         
         Session.commit()
-        return redirect('/')
+        return redirect('/home')
     
     return render_template('edit.html', user=user)
 
