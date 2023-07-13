@@ -88,6 +88,8 @@ def create_evaluation():
             user_id = session.get('user_id')
         else:
             return redirect('/login')
+        if Session.query(User.role_id).filter(User.id == user_id)[0][0] == 1:
+            return render_template('error.html', error_message='Não é permitido admins criarem avaliações.')
         class_discipline_name = request.form['class_discipline']
         class_number = request.form['class_number']
         class_period = request.form['class_period']
@@ -116,8 +118,8 @@ def edit_evaluation(id):
 
     if evaluation.user_id != session.get('user_id'):
         # If the logged-in user is not the owner of the evaluation, redirect them to an error page or handle it accordingly
-        return render_template('error.html', error_message='You are not authorized to edit this evaluation.')
-    
+        return render_template('error.html', error_message='Você não é autorizado a editar essa avaliação.')
+
     if request.method == 'POST':
         evaluation.class_discipline_code = request.form['class_discipline']
         evaluation.class_number = request.form['class_number']
@@ -128,16 +130,19 @@ def edit_evaluation(id):
         
         Session.commit()
         
-        return redirect('/evaluations')
+        return redirect('/home')
     
     return render_template('edit_evaluation.html', evaluation=evaluation)
 
 @app.route('/evaluation/delete/<int:id>')
 def delete_evaluation(id):
     evaluation = Session.query(Evaluation).get(id)
+    if evaluation.user_id != session.get('user_id'):
+        if Session.query(User.role_id).filter(User.id == evaluation.user_id)[0][0] != 1:
+            return render_template('error.html', error_message='Você não é autorizado a deletar essa avaliação.')
     Session.delete(evaluation)
     Session.commit()
-    return redirect('/evaluations')
+    return redirect('/home')
 
 """
 CRUD REPORT
@@ -159,7 +164,7 @@ def create_report(evaluation_id):
         
         return redirect('/reports')
     
-    return render_template('create_report.html', evaluation_id=evaluation_id)
+    return render_template('home.html', evaluation_id=evaluation_id)
 
 @app.route('/report/edit/<int:id>', methods=['GET', 'POST'])
 def edit_report(id):

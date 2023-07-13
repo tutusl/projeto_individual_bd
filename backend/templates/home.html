@@ -132,6 +132,18 @@
             border: none;
             cursor: pointer;
         }
+        .report-button {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .report-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 
@@ -192,36 +204,36 @@
         <div class="tweet-container">
             <div class="tweet-header">
                 <h3>Avaliações</h3>
-                <div class="tweet-actions">
-                    <a href="/evaluation/edit/{{ evaluations.id }}">Editar</a>
-                    <a href="/evaluation/delete/{{ evaluations.id }}">Excluir</a>
-                </div>
             </div>
             <table>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Disciplina</th>
-                            <th>Número</th>
-                            <th>Período</th>
-                            <th>Descrição</th>
-                            <th>Avaliação</th>
-                            <th>Usuário</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for evaluation in evaluations %}
-                        <tr>
-                            <td>{{ evaluation.class_discipline }}</td>
-                            <td>{{ evaluation.class_number }}</td>
-                            <td>{{ evaluation.class_period }}</td>
-                            <td>{{ evaluation.description }}</td>
-                            <td>{{ evaluation.rating }}</td>
-                            <td>{{ evaluation.user_id }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>Número</th>
+                        <th>Período</th>
+                        <th>Descrição</th>
+                        <th>Avaliação</th>
+                        <th>Usuário</th>
+                        <th>Ações</th> <!-- Added column for actions -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for evaluation in evaluations %}
+                    <tr>
+                        <td>{{ evaluation.class_discipline }}</td>
+                        <td>{{ evaluation.class_number }}</td>
+                        <td>{{ evaluation.class_period }}</td>
+                        <td>{{ evaluation.description }}</td>
+                        <td>{{ evaluation.rating }}</td>
+                        <td>{{ evaluation.user_id }}</td>
+                        <td>
+                            <a href="/evaluation/edit/{{ evaluation.id }}">Editar</a> <!-- Edit button -->
+                            <a href="/evaluation/delete/{{ evaluation.id }}">Excluir</a> <!-- Delete button -->
+                            <a href="/report/create/{{ evaluation.id }}" class="report-button">Reportar</a> <!-- Report button -->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
 
