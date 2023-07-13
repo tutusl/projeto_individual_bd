@@ -8,18 +8,17 @@
     <table>
         <thead>
             <tr>
-                <th>Avaliação</th>
-                <th>Razão</th>
+                <th>Descrição da Avaliação</th>
+                <th>Razão do report</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for report in reports %}
             <tr>
-                <td>{{ report.evaluation_id }}</td>
+                <td>{{ report.evaluation.description }}</td>
                 <td>{{ report.reason }}</td>
                 <td>
-                    <a href="/report/edit/{{ report.id }}">Editar</a>
                     <a href="/report/delete/{{ report.id }}">Excluir</a>
                 </td>
             </tr>

@@ -150,11 +150,17 @@ CRUD REPORT
 
 @app.route('/reports')
 def reports():
+    user_id = session.get('user_id')
+    if Session.query(User.role_id).filter(User.id == user_id)[0][0] != 1:
+            return render_template('error.html', error_message='Você não é autorizado a vizualizar ou deletar avaliações.')
     reports = Session.query(Report).all()
     return render_template('reports.html', reports=reports)
 
 @app.route('/report/create/<int:evaluation_id>', methods=['GET', 'POST'])
 def create_report(evaluation_id):
+    user_id = session.get('user_id')
+    if Session.query(User.role_id).filter(User.id == user_id)[0][0] == 1:
+        return render_template('error.html', error_message='Admins não são autorizados a criar reports.')
     if request.method == 'POST':
         reason = request.form['reason']
         
@@ -162,9 +168,9 @@ def create_report(evaluation_id):
         Session.add(new_report)
         Session.commit()
         
-        return redirect('/reports')
+        return redirect('/home')
     
-    return render_template('home.html', evaluation_id=evaluation_id)
+    return render_template('reports.html', evaluation_id=evaluation_id)
 
 @app.route('/report/edit/<int:id>', methods=['GET', 'POST'])
 def edit_report(id):
