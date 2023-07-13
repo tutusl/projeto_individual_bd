@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, session, jsonify
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
@@ -33,11 +32,7 @@ CRUD USUÁRIO
 
 @app.route('/')
 def index():
-    results = Session.query(User).all()
-    if session.get('user_id'):
-        return render_template('index.html', users=results)
-    else:
-        return redirect('/login')
+    return redirect('/login')
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
@@ -89,15 +84,18 @@ def evaluations():
 @app.route('/evaluation/create', methods=['GET', 'POST'])
 def create_evaluation():
     if request.method == 'POST':
-        class_discipline = request.form['class_discipline']
+        if session.get('user_id'):
+            user_id = session.get('user_id')
+        else:
+            return redirect('/login')
+        class_discipline_name = request.form['class_discipline']
         class_number = request.form['class_number']
         class_period = request.form['class_period']
         description = request.form['description']
         rating = request.form['rating']
-        user_id = request.form['user_id']
         
         new_evaluation = Evaluation(
-            class_discipline_code=class_discipline,
+            class_discipline_code=(Session.query(Discipline.discipline_code).where(Discipline.name == class_discipline_name)[0])[0],
             class_number=class_number,
             class_period=class_period,
             description=description,
@@ -108,13 +106,17 @@ def create_evaluation():
         Session.add(new_evaluation)
         Session.commit()
         
-        return redirect('/evaluations')
+        return redirect('/home')
     
     return render_template('create_evaluation.html')
 
 @app.route('/evaluation/edit/<int:id>', methods=['GET', 'POST'])
 def edit_evaluation(id):
     evaluation = Session.query(Evaluation).get(id)
+
+    if evaluation.user_id != session.get('user_id'):
+        # If the logged-in user is not the owner of the evaluation, redirect them to an error page or handle it accordingly
+        return render_template('error.html', error_message='You are not authorized to edit this evaluation.')
     
     if request.method == 'POST':
         evaluation.class_discipline_code = request.form['class_discipline']
@@ -193,7 +195,7 @@ def login():
         
         if user:
             session['user_id'] = user.id
-            return redirect('/')
+            return redirect('/home')
         else:
             error_message = 'Credenciais inválidas. Por favor, tente novamente.'
             return render_template('login.html', error_message=error_message)
@@ -208,3 +210,47 @@ LOGOUT
 def logout():
     session.pop('user_id', None)
     return redirect('/login')
+
+"""
+HOME 
+"""
+
+@app.route('/home')
+def home():
+    if session.get('user_id'):
+        evaluations = Session.query(Evaluation).all()
+        return render_template('home.html', evaluations=evaluations)
+    else:
+        return redirect('/login')
+    
+
+"""
+DEPENDENT DROPDOWN MENU
+"""
+
+@app.route('/get_periods/')
+def get_periods():
+
+    periods = Session.query(Lecture.period).distinct().all()
+    periods_list = [period[0] for period in periods]
+    return jsonify(periods_list)
+
+
+@app.route('/get_disciplines/<selected_period>')
+def get_disciplines(selected_period):
+
+    discipline_names = Session.query(Discipline.name).join(Lecture, Discipline.discipline_code == Lecture.discipline_code).filter(Lecture.period == selected_period).distinct().all()
+    discipline_names_list = [discipline_name[0] for discipline_name in discipline_names]
+    return jsonify(discipline_names_list)
+
+@app.route('/get_professors/<selected_period>/<selected_discipline>')
+def get_professors(selected_period, selected_discipline):
+    professors_names = Session.query(Lecture.professor_name).join(Discipline, Lecture.discipline_code == (Session.query(Discipline.discipline_code).where(Discipline.name == selected_discipline)[0])[0]).filter(Lecture.period == selected_period).distinct().all()
+    professors_names_list = [professors_name[0] for professors_name in professors_names]
+    return jsonify(professors_names_list)
+
+@app.route('/get_professors/<selected_period>/<selected_discipline>/<selected_professor>')
+def get_class_numbers(selected_period, selected_discipline, selected_professor):
+    class_numbers = Session.query(Lecture.class_number).join(Discipline, Lecture.discipline_code == (Session.query(Discipline.discipline_code).where(Discipline.name == selected_discipline)[0])[0]).filter(Lecture.period == selected_period).filter(Lecture.professor_name == selected_professor).distinct().all()
+    class_numbers_list = [class_number[0] for class_number in class_numbers]
+    return jsonify(class_numbers_list)

@@ -2,22 +2,86 @@
 <html>
 <head>
     <title>Login</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 200px;
+            padding: 5px;
+        }
+
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        p.error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .login-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login</h1>
-    
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% endif %}
-    
-    <form method="POST" action="/login">
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
+    <div class="login-box">
+        <h1>Login</h1>
         
-        <label>Senha:</label>
-        <input type="password" name="senha" required><br>
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
         
-        <input type="submit" value="Entrar">
-    </form>
+        <form method="POST" action="/login">
+            <label>Email:</label>
+            <input type="email" name="email" required><br>
+            
+            <label>Senha:</label>
+            <input type="password" name="senha" required><br>
+            
+            <input type="submit" value="Entrar">
+        </form>
+        <div class="login-link">
+            <p>Não tem uma conta? <a href="/create">Inscreva-se</a></p>
+        </div>
+    </div>
 </body>
 </html>

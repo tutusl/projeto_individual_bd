@@ -2,6 +2,54 @@
 <html>
 <head>
     <title>Avaliações</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 800px;
+            margin: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .add-evaluation-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Avaliações</h1>
@@ -34,6 +82,8 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="/evaluation/create">Adicionar Avaliação</a>
+    <div class="add-evaluation-link">
+        <a href="/evaluation/create">Adicionar Avaliação</a>
+    </div>
 </body>
 </html>

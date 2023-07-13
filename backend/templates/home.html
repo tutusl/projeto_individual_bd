@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .header-container {
+            background-color: #333;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            padding: 0 20px;
+            max-width: 1200px;
+            /* Definir uma largura máxima para limitar a largura da header */
+            color: #fff;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .logout-button {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .content-container {
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 1200px;
+            /* Definir uma largura máxima para limitar a largura do conteúdo */
+        }
+
+        .tweet-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .tweet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tweet-actions {
+            display: flex;
+        }
+
+        .tweet-actions a {
+            text-decoration: none;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .tweet-actions a:hover {
+            text-decoration: underline;
+        }
+
+        .add-evaluation-link {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-button {
+            margin-top: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #555;
+        }
+
+        /* Estilos do formulário de criação de avaliação */
+        .create-evaluation-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .create-evaluation-form .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .create-evaluation-form .form-label {
+            width: 100px;
+            text-align: left;
+        }
+
+        .create-evaluation-form .form-input {
+            flex: 1;
+            padding: 5px;
+        }
+
+        .create-evaluation-form input[type="submit"] {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-container">
+        <div class="header">
+            <h1 class="header-title">Home</h1>
+            <button class="logout-button" onclick="logout()">Deslogar</button>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <!-- <div class="add-evaluation-link">
+            <a href="/evaluation/create">Adicionar Avaliação</a>
+        </div> -->
+
+        <div class="create-evaluation-form">
+            <h1 class="form-title">Adicionar Avaliação</h1>
+            <form action="/evaluation/create" method="POST">
+                <div class="form-row">
+                    <label class="form-label" for="class_period">Período:</label>
+                    <select class="form-input" id="class_period" name="class_period" required>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="class_discipline">Disciplina:</label>
+                    <select class="form-input" id="class_discipline" name="class_discipline" required>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="class_professor">Professor:</label>
+                    <select class="form-input" id="class_professor" name="class_professor" required>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="class_number">Número:</label>
+                    <select class="form-input" id="class_number" name="class_number" required>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="description">Descrição:</label>
+                    <textarea class="form-input" id="description" name="description" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="rating">Avaliação:</label>
+                    <input class="form-input" type="number" id="rating" name="rating" required>
+                </div>
+
+                <input type="submit" value="Salvar">
+            </form>
+        </div>
+
+        <div class="tweet-container">
+            <div class="tweet-header">
+                <h3>Avaliações</h3>
+                <div class="tweet-actions">
+                    <a href="/evaluation/edit/{{ evaluations.id }}">Editar</a>
+                    <a href="/evaluation/delete/{{ evaluations.id }}">Excluir</a>
+                </div>
+            </div>
+            <table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Disciplina</th>
+                            <th>Número</th>
+                            <th>Período</th>
+                            <th>Descrição</th>
+                            <th>Avaliação</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for evaluation in evaluations %}
+                        <tr>
+                            <td>{{ evaluation.class_discipline }}</td>
+                            <td>{{ evaluation.class_number }}</td>
+                            <td>{{ evaluation.class_period }}</td>
+                            <td>{{ evaluation.description }}</td>
+                            <td>{{ evaluation.rating }}</td>
+                            <td>{{ evaluation.user_id }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </table>
+        </div>
+
+        
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = "/logout";
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var periodDropdown = document.getElementById('class_period');
+            var disciplineDropdown = document.getElementById('class_discipline');
+            var professorDropdown = document.getElementById('class_professor');
+            var numberDropdown = document.getElementById('class_number');
+            
+            loadDropdownData(periodDropdown, '/get_periods/');
+            
+
+            // Event listener for period dropdown change
+            periodDropdown.addEventListener('change', function() {
+                var selectedPeriod = periodDropdown.value;
+                // Make an AJAX request to the Flask backend to fetch disciplines for the selected period
+                var endpoint = '/get_disciplines/' + selectedPeriod;
+                loadDropdownData(disciplineDropdown, endpoint);
+            });
+
+            // Event listener for discipline dropdown change
+            disciplineDropdown.addEventListener('change', function() {
+                var selectedPeriod = periodDropdown.value;
+                var selectedDiscipline = disciplineDropdown.value;
+                // Make an AJAX request to the Flask backend to fetch professors for the selected discipline
+                var endpoint = '/get_professors/' + selectedPeriod + '/' + selectedDiscipline;
+                loadDropdownData(professorDropdown, endpoint);
+            });
+
+            professorDropdown.addEventListener('change', function() {
+                var selectedPeriod = periodDropdown.value;
+                var selectedDiscipline = disciplineDropdown.value;
+                var selectedProfessor = professorDropdown.value;
+                // Make an AJAX request to the Flask backend to fetch professors for the selected discipline
+                var endpoint = '/get_professors/' + selectedPeriod + '/' + selectedDiscipline + '/' + selectedProfessor;
+                loadDropdownData(numberDropdown, endpoint);
+            });
+
+            // Function to load data into the dropdown
+            function loadDropdownData(dropdown, endpoint) {
+                // Clear existing options
+                dropdown.innerHTML = '<option value="">Selecione uma opção</option>';
+
+                // Make AJAX request to Flask backend
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', endpoint, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+
+                        // Add options to dropdown menu
+                        for (var i = 0; i < data.length; i++) {
+                            var option = document.createElement("option");
+                            option.value = data[i];
+                            option.innerHTML = data[i];
+                            dropdown.appendChild(option);
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        });
+    </script>
+</body>
+
+</html>
