@@ -52,7 +52,7 @@
         <h1>Error</h1>
         <p>{{ error_message }}</p>
         <div class="back-button">
-            <a href="/">Back</a>
+            <a href="/home">Back</a>
         </div>
     </div>
     <script>
@@ -66,9 +66,6 @@
             var errorMessageContainer = document.getElementsByClassName('back-button');
             errorMessageContainer.addEventListener('click', redirectToHome);
         });
-    
-        // Automatically redirect after a certain delay
-        setTimeout(redirectToHome, 3000); // Redirect after 3 seconds (adjust the delay as needed)
     </script>
 </body>
 </html>

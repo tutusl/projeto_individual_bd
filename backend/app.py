@@ -170,7 +170,7 @@ def create_report(evaluation_id):
         
         return redirect('/home')
     
-    return render_template('reports.html', evaluation_id=evaluation_id)
+    return render_template('create_report.html', evaluation_id=evaluation_id)
 
 @app.route('/report/edit/<int:id>', methods=['GET', 'POST'])
 def edit_report(id):
@@ -188,7 +188,12 @@ def edit_report(id):
 @app.route('/report/delete/<int:id>')
 def delete_report(id):
     report = Session.query(Report).get(id)
-    Session.delete(report)
+
+    evaluation_id = Session.query(Evaluation.id).filter(Evaluation.id == report.evaluation_id)
+    for report in Session.query(Report.id).filter(Report.evaluation_id == evaluation_id):
+        Session.delete(Session.query(Report).get(report[0]))
+
+    Session.delete(Session.query(Evaluation).get(evaluation_id[0][0]))
     Session.commit()
     return redirect('/reports')
 
