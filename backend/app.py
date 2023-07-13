@@ -34,7 +34,7 @@ CRUD USUÁRIO
 @app.route('/')
 def index():
     results = Session.query(User).all()
-    if 'user.id' in session:
+    if session.get('user_id'):
         return render_template('index.html', users=results)
     else:
         return redirect('/login')
