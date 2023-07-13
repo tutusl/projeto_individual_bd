@@ -1,30 +1,124 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Reports</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .header-container {
+            background-color: #333;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            padding: 0 20px;
+            max-width: 1200px;
+            /* Definir uma largura máxima para limitar a largura da header */
+            color: #fff;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .logout-button {
+            margin-top: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .content-container {
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 1200px;
+            /* Definir uma largura máxima para limitar a largura do conteúdo */
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .report-table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        .report-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Reports</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Descrição da Avaliação</th>
-                <th>Razão do report</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in reports %}
-            <tr>
-                <td>{{ report.evaluation.description }}</td>
-                <td>{{ report.reason }}</td>
-                <td>
-                    <a href="/report/delete/{{ report.id }}">Excluir</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="/reports">Voltar</a>
+    <div class="header-container">
+        <div class="header">
+            <h1 class="header-title">Reports</h1>
+            <a href="/home" class="logout-button">Voltar</a>
+        </div>
+    </div>
+    <div class="content-container">
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Descrição da Avaliação</th>
+                    <th>Razão do Report</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.evaluation.description }}</td>
+                    <td>{{ report.reason }}</td>
+                    <td>
+                        <a href="/report/delete/{{ report.id }}">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
+
 </html>
