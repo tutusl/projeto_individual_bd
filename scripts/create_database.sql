@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `evaluatedb`.`lecture` (
   INDEX `fk_class_1_idx` (`discipline_code` ASC) VISIBLE,
   INDEX `fk_class_3_idx` (`class_number` ASC) VISIBLE,
   INDEX `fk_class_4_idx` (`period` ASC) VISIBLE,
-  PRIMARY KEY (`discipline_code`, `class_number`, `period`),
+  PRIMARY KEY (`discipline_code`, `class_number`, `period`, `professor_name`),
   CONSTRAINT `fk_class_1`
     FOREIGN KEY (`discipline_code`)
     REFERENCES `evaluatedb`.`discipline` (`discipline_code`)
