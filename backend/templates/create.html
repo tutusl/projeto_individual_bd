@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Adicionar Report</title>
+    <title>Inscreva-se</title>
     <style>
         /* Estilos CSS */
         body {
@@ -13,12 +13,13 @@
             background-color: #f2f2f2;
         }
 
-        .report-box {
+        .register-box {
             background-color: #fff;
-            padding: 20px;
+            padding: 40px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             margin: 20px;
+            width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,11 +35,13 @@
         label {
             display: block;
             margin-top: 10px;
+            text-align: left;
         }
 
-        textarea {
-            width: 200px;
-            height: 100px;
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
             padding: 5px;
         }
 
@@ -51,25 +54,42 @@
             cursor: pointer;
         }
 
-        a {
-            text-decoration: none;
-            color: #333;
+        .login-link {
             margin-top: 10px;
             text-align: center;
+        }
+
+        .login-link a {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="report-box">
-        <h1>Adicionar Report</h1>
-        
-        <form action="/report/create/{{ evaluation_id }}" method="POST">
-            <label for="reason">Razão:</label>
-            <textarea id="reason" name="reason" required></textarea><br>
+    <div class="register-box">
+        <h1>Inscreva-se</h1>
+        <form action="/create" method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required><br>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+            
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required><br>
+            
+            <label for="matricula">Matrícula:</label>
+            <input type="text" id="matricula" name="matricula" required><br>
+            
+            <label for="curso">Curso:</label>
+            <input type="text" id="curso" name="curso" required><br>
             
             <input type="submit" value="Salvar">
         </form>
-        <a href="/home">Voltar</a>
+        <div class="login-link">
+            <p>Já possui conta? <a href="/login">Entrar</a></p>
+        </div>
     </div>
 </body>
 </html>
