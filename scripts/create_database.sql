@@ -179,7 +179,7 @@ DROP TABLE IF EXISTS `evaluatedb`.`report` ;
 
 CREATE TABLE IF NOT EXISTS `evaluatedb`.`report` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `reason` VARCHAR(45) NULL,
+  `reason` VARCHAR(900) NULL,
   `evaluation_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_report_1_idx` (`evaluation_id` ASC) VISIBLE,
